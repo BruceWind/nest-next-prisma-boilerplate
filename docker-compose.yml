@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"  # NextJS
+      - "4000:4000"  # NestJS
+    depends_on:
+      - postgres
+    env_file:
+      - conf.ini
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+
+  postgres:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    env_file:
+      - conf.ini
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  prisma-studio:
+    build: .
+    command: pnpm --filter server prisma studio
+    ports:
+      - "5555:5555"
+    depends_on:
+      - postgres
+    env_file:
+      - conf.ini
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+
+volumes:
+  postgres_data:

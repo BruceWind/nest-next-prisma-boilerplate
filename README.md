@@ -2,7 +2,7 @@
 
 ## 🍰 Tech stack
 
-- DB: PostgreSQL
+- DB: PostgreSQL (dockerized)
 - ORM: Prisma
 - Node.js framework: NestJS
 - End-to-end type-safe APIs: [tRPC](https://trpc.io/)
@@ -10,6 +10,7 @@
 - Style: Tailwind + [daisyUI](https://daisyui.com/)
 - Node.js package manager: [pnpm](https://pnpm.io)
 - Monorepo: [pnpm workspace](https://pnpm.io/workspaces)
+- Containerization: Docker
 
 ## 🥕 Getting Started
 
@@ -25,10 +26,16 @@ Develop:
 # create local environment variables
 cp ./apps/web/.env.local.example ./apps/web/.env.local
 
-pnpm dev
+# Optionally, modify the conf.ini file to change database settings
+
+# Start the Docker containers
+docker-compose up --build
 ```
 
-Following this, you can open `http://localhost:3000` in your browser.
+Following this, you can open:
+- `http://localhost:3000` in your browser for the NextJS app
+- `http://localhost:4000` for the NestJS server
+- `http://localhost:5555` for Prisma Studio
 
 If you want to install the `@nestjs/config` package. In the root of your directory, you can run:
 
@@ -42,6 +49,20 @@ This repo has been tested to run with railway.
 You can fork and open railway to establish:
 [deploy on railway](https://railway.app)
 
+## Database Backup and Restore
+
+To backup the PostgreSQL database:
+
+```sh
+docker run --rm -v postgres_data:/dbdata -v $(pwd):/backup alpine tar cvf /backup/backup.tar /dbdata
+```
+
+To restore the PostgreSQL database:
+
+```sh
+docker run --rm -v postgres_data:/dbdata -v $(pwd):/backup alpine sh -c "cd /dbdata && tar xvf /backup/backup.tar --strip 1"
+```
+
 ## 🧚‍♀️ Reference
 
 - [Building a full-stack, fully type-safe pnpm monorepo with NestJS, NextJS & tRPC](https://www.tomray.dev/nestjs-nextjs-trpc)
@@ -52,3 +73,7 @@ You can fork and open railway to establish:
 [server/Readme](/apps/server/README.md)
 
 [web/Readme](/apps/web/README.md)
+
+## Configuration
+
+The project uses a `conf.ini` file in the root directory to set variables for Docker building. You can modify this file to change database settings and other environment variables.

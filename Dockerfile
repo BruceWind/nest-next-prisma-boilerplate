@@ -1,16 +1,15 @@
 # Use Node.js as the base image
 FROM node:18-alpine
 
-# 安装 pnpm
+# Install pnpm
 RUN npm install -g pnpm
 
-# 设置 pnpm 的全局 bin 目录
+# Set pnpm global bin directory
 ENV PNPM_HOME=/root/.local/share/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 
-# 安装全局依赖
+# Install global dependencies
 RUN pnpm add -g @nestjs/cli next
-
 
 # Set working directory
 WORKDIR /app
@@ -32,16 +31,17 @@ COPY . .
 RUN cd apps/server && pnpm install
 
 # Build web (with CI=false to ignore warnings)
-RUN cd apps/web  && pnpm install
+RUN cd apps/web && pnpm install
 
 # Expose ports for web and server
 EXPOSE 3000 4000
 
 # Create a startup script
 RUN echo '#!/bin/sh' > start.sh && \
-  echo 'npm run dev &' >> start.sh && \
-  echo 'wait' >> start.sh && \
-  chmod +x start.sh
+    echo 'cd apps/server && pnpm prisma generate && pnpm prisma migrate deploy && cd ../..' >> start.sh && \
+    echo 'pnpm dev &' >> start.sh && \
+    echo 'wait' >> start.sh && \
+    chmod +x start.sh
 
-# Start both services
+# Start the application
 CMD ["./start.sh"]
