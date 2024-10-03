@@ -20,7 +20,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: StandaloneDockerfile  # Updated this line
     ports:
       - "3000:3000"  # NextJS
       - "4000:4000"  # NestJS
@@ -40,7 +40,9 @@ services:
              ./start.sh"
 
   prisma-studio:
-    build: .
+    build:
+      context: .
+      dockerfile: StandaloneDockerfile  # Updated this line
     command: sh -c "cd apps/server && npx prisma studio"
     ports:
       - "5555:5555"
