@@ -29,7 +29,7 @@ cp ./apps/web/.env.local.example ./apps/web/.env.local
 # Optionally, modify the conf.ini file to change database settings
 
 # Start the Docker containers
-docker-compose up --build
+docker compose up --build
 ```
 
 Following this, you can open:
@@ -37,11 +37,28 @@ Following this, you can open:
 - `http://localhost:4000` for the NestJS server
 - `http://localhost:5555` for Prisma Studio
 
+To stop and remove the containers, networks, and volumes defined in the docker-compose.yml file, run:
+
+```sh
+docker compose down
+```
+
+Note: This will not remove the persistent volume for the PostgreSQL data. If you want to remove all data and start fresh, use:
+
+```sh
+docker compose down -v
+```
+
 If you want to install the `@nestjs/config` package. In the root of your directory, you can run:
 
 ```sh
 pnpm add @nestjs/config --filter=server
 ```
+
+## Docker Configuration
+
+- `docker-compose.yml` and `StandaloneDockerfile` are used for local development and testing.
+- The `Dockerfile` in the root directory is specifically configured for deployment on railway.app.(This platform does not support docker-compose yml)
 
 ## Deployment
 
