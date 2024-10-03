@@ -38,6 +38,10 @@ EXPOSE 3000 4000
 
 # Create a startup script
 RUN echo '#!/bin/sh' > start.sh && \
+    echo 'if [ -z "$DATABASE_URL" ]; then' >> start.sh && \
+    echo '  echo "Error: DATABASE_URL is not set"' >> start.sh && \
+    echo '  exit 1' >> start.sh && \
+    echo 'fi' >> start.sh && \
     echo 'cd apps/server && pnpm prisma generate && pnpm prisma migrate deploy && cd ../..' >> start.sh && \
     echo 'pnpm dev &' >> start.sh && \
     echo 'wait' >> start.sh && \
