@@ -20,7 +20,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: StandaloneDockerfile  # Updated this line
+      dockerfile: StandaloneDockerfile
     ports:
       - "3000:3000"  # NextJS
       - "4000:4000"  # NestJS
@@ -28,9 +28,6 @@ services:
       - postgres
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      - PORT=${PORT}
     volumes:
       - ./apps:/app/apps
     networks:
@@ -50,8 +47,6 @@ services:
       - postgres
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
     networks:
       - app-network
 
