@@ -24,6 +24,7 @@ services:
     ports:
       - "3000:3000"  # NextJS
       - "4000:4000"  # NestJS
+      - "5555:5555" # db studio
     depends_on:
       - postgres
     env_file:
@@ -36,19 +37,7 @@ services:
       sh -c "echo DATABASE_URL=$${DATABASE_URL} &&
              ./start.sh"
 
-  prisma-studio:
-    build:
-      context: .
-      dockerfile: StandaloneDockerfile  # Updated this line
-    command: sh -c "cd apps/server && npx prisma studio"
-    ports:
-      - "5555:5555"
-    depends_on:
-      - postgres
-    env_file:
-      - .env
-    networks:
-      - app-network
+
 
   pgadmin:
     image: dpage/pgadmin4
